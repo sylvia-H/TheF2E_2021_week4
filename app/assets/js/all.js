@@ -143,6 +143,11 @@ function renderCharts(){
   renderSalary();
   renderSalary_score();
   renderSkillTable();
+  
+  femaleArr = ['女性人數',0,0,0,0,0,0,0];
+  maleArr = ['男性人數',0,0,0,0,0,0,0];
+  avgSalaryArr = ['平均年薪',0,0,0,0,0,0,0];
+  renderTenureSalary();
 }
 
 // 取得初始資料
@@ -623,4 +628,163 @@ function renderSkillTable(){
     </tr>`;
   });
   skillTable.innerHTML = str;
+}
+
+// 為分類資料設定全域變數
+let femaleArr = ['女性人數',0,0,0,0,0,0,0];
+let maleArr = ['男性人數',0,0,0,0,0,0,0];
+let avgSalaryArr = ['平均年薪',0,0,0,0,0,0,0];
+
+
+// 渲染年資與年薪關係圖表
+function renderTenureSalary(){
+  filterData.forEach(item => {  
+    const tenure = item.company.job_tenure;
+    const salary = item.company.salary;
+    if(item.gender==="女性"){
+      classifyTenureData('female',tenure,salary);
+    } else {
+      classifyTenureData('male',tenure,salary);
+    }
+  });
+
+  // 計算平均年薪
+  for(let i=1; i<avgSalaryArr.length;i++){
+    avgSalaryArr[i] = Math.round(avgSalaryArr[i]/(femaleArr[i]+maleArr[i]));
+  }
+
+  let relationData = [femaleArr, maleArr, avgSalaryArr];
+  console.log(relationData);
+  var tenureSalaryChart = c3.generate({
+    bindto: '#tenureSalaryChart',
+    data: {
+      columns: relationData,
+      type: 'bar',
+      types: {
+          平均年薪: 'spline',
+      },
+      colors: {
+        "女性人數": '#F4BFDB',
+        "男性人數": '#00D9C0',
+        "平均年薪": '#FCF6BD'
+      }
+    },
+    axis: {
+        x: {
+            type: 'category',
+            categories: ['1 年以下', '1~2 年', '2~3 年', '3~5 年', '5~7 年', '7~9 年', '10 年以上']
+        }
+    }
+  });
+
+}
+
+// 分類年資資料
+function classifyTenureData(gender, tenure, salary){
+  if(gender === 'female'){
+    gender = femaleArr;
+  } else {
+    gender = maleArr;
+  }
+
+  switch (tenure) {
+    case '1 年以下':
+      gender[1] += 1;
+      classifySalaryData(1,salary);
+      break;
+    case '1~2 年':
+      gender[2] += 1;
+      classifySalaryData(2,salary);
+      break;
+    case '2~3 年':
+      gender[3] += 1;
+      classifySalaryData(3,salary);
+      break;
+    case '3~5 年':
+      gender[4] += 1;
+      classifySalaryData(4,salary);
+      break;
+    case '5~7 年':
+      gender[5] += 1;
+      classifySalaryData(5,salary);
+      break;
+    case '7~9 年':
+      gender[6] += 1;
+      classifySalaryData(6,salary);
+      break;
+    case '10 年以上':
+      gender[7] += 1;
+      classifySalaryData(7,salary);
+      break;
+  }
+
+}
+
+// 分類年資與年薪資料
+function classifySalaryData(tenure, salary){
+  switch (salary) {
+    case '36 萬以下':
+      avgSalaryArr[tenure] += 36;
+      break;
+    case '36~50 萬':
+      avgSalaryArr[tenure] += 43;
+      break;
+    case '51~60 萬':
+      avgSalaryArr[tenure] += 55;
+      break;
+    case '61~70 萬':
+      avgSalaryArr[tenure] += 65;
+      break;
+    case '71~80 萬':
+      avgSalaryArr[tenure] += 75;
+      break;
+    case '81~90 萬':
+      avgSalaryArr[tenure] += 85;
+      break;
+    case '91~100 萬':
+      avgSalaryArr[tenure] += 95;
+      break;
+    case '101~110 萬':
+      avgSalaryArr[tenure] += 105;
+      break;
+    case '111~120 萬':
+      avgSalaryArr[tenure] += 115;
+      break;
+    case '121~130 萬':
+      avgSalaryArr[tenure] += 125;
+      break;
+    case '131~140 萬':
+      avgSalaryArr[tenure] += 135;
+      break;
+    case '141~150 萬':
+      avgSalaryArr[tenure] += 145;
+      break;
+    case '151~160 萬':
+      avgSalaryArr[tenure] += 155;
+      break;
+    case '161~170 萬':
+      avgSalaryArr[tenure] += 165;
+      break;
+    case '171~180 萬':
+      avgSalaryArr[tenure] += 175;
+      break;
+    case '181~190 萬':
+      avgSalaryArr[tenure] += 185;
+      break;
+    case '191~200 萬':
+      avgSalaryArr[tenure] += 195;
+      break;
+    case '201~300 萬':
+      avgSalaryArr[tenure] += 250;
+      break;
+    case '301~400 萬':
+      avgSalaryArr[tenure] += 350;
+      break;
+    case '400 萬以上':
+      avgSalaryArr[tenure] += 400;
+      break;
+    default:
+      avgSalaryArr[tenure] += 36;
+  }
+
 }

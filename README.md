@@ -12,6 +12,12 @@
 
 <br>
 
+* 以**條狀圖**與**線圖**統合圖表，在一張圖中呈現年資與年薪關係。
+
+![image](./app/assets/images/salaryTenure.jpg)
+
+<br>
+
 * 使用技術與套件列表：
   - SCSS
   - ES6
